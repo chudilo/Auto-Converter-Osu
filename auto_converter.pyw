@@ -1,37 +1,37 @@
 import os #for list of files
-
-import pywinauto #for automatic input
-
 from tkinter import * #for extra window
+from pywinauto.application import Application  #for automatic input
 
-from pywinauto.application import Application
-import inspect
+try:
+    app = Application(backend="uia").start('converter.exe')
+    app = Application(backend="uia").connect(path = 'converter.exe')
 
-#'To Osu! converter (Made by wanwan159)'
-app = Application(backend="uia").start('D:/Osu/converter.exe')
-#inspect.getmembers(app, predicate=inspect.ismethod)
-#print(pywinauto.findwindows.find_elements())
-Wizard = app['To Osu! converter (Made by wanwan159)']
-#Wizard.menu_select("File -> Close")
-#app.Dialog.print_control_identifiers()
-#app.Dialog.Open.click()
-app.Dialog.Edit10.set_text("Sasai kudasai")
+    Wizard = app['To Osu! converter (Made by wanwan159)']
 
+    direct = os.getcwd() + '/input/'
+    
+    allfiles = os.listdir(direct)
+    files = list()
+    for file in allfiles:
+        if ".ojn" in file:
+            files.append(file)
 
-#dlg_spec.wrapper_object()
-#app = Application(backend="uia").start('spyxx_amd64')
+    for i in range(len(files)):
+        string = direct + files[i]
+        app.Dialog.Edit10.set_text(string)
+        app.Dialog.Convert.click()
 
-'''
-    elements = findbestmatch.find_best_control_matches(best_match, wrapped_elems)
-  File "D:\Program_Files\Python3\lib\site-packages\pywinauto\findbestmatch.py", line 533, in find_best_control_matches
-    raise MatchError(items = name_control_map.keys(), tofind = search_text)
-pywinauto.findbestmatch.MatchError: Could not find 'Form1' in 'dict_keys([])'
-'''
+        txt = app.Dialog.Edit8.get_value()
+        while("Finished converting!!" not in txt):
+            pass
 
+except Exeption:
+    pass
 
-#working programm
-'''
-app = Application(backend="uia").start('D:/StepEdit_Lite/stepeditlite.exe')
-Wizard = app['StepEdit Lite']
-Wizard.menu_select("File -> Exit")
-'''
+else:
+    print("Everything is fine")
+
+finally:
+    if "converter.exe" in os.listdir(os.getcwd()):
+        app.kill()
+
